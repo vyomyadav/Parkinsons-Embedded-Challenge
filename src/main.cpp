@@ -287,8 +287,9 @@ int main()
 
     // Compute vector magnitude from averages
     float magnitude = sqrtf(average_x * average_x + average_y * average_y + average_z * average_z);
-    
-    // printf("Tremor detected: %4.5f degrees/s\n", average); // For serial Monitor check
+
+    // Uncomment the below code for serial Monitor check to figure out the stationary tremor for your gyroscope. Use that value to setup the TREMOR_TRESHOLD
+    // printf("Tremor detected: %4.5f degrees/s\n", magnitude);
     // Condition to check if magnitude is greater than tremor threshold
     if (detect_tremor(magnitude))
     {
@@ -312,7 +313,7 @@ int main()
         float avg_frequency = calculate_average_frequency();
         // printf("Tremor detected: %4.5f degrees/s\n, Avg Frequency: %3.2f Hz\n ", magnitude, avg_frequency); // For serial Monitor check
         // Code to limit frequency to 3-6Hz, handle detected tremor, including displaying on the LCD
-        printf("Frequency: %3.2f Hz\n",avg_frequency); 
+        // printf("Frequency: %3.2f Hz\n",avg_frequency); 
         if (avg_frequency >= 3.0f && avg_frequency <= 6.0f)
         {
           char buf[64];

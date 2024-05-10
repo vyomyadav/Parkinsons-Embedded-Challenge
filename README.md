@@ -27,7 +27,7 @@ The tremor threshold (`TREMOR_THRESHOLD`) is a critical parameter used to distin
 
 1. **Initial Setup**: Place the gyroscope sensor on a flat, stable surface to minimize any movement.
 
-2. **Monitor Tremor Value**: Observe the tremor value displayed on the serial monitor when the gyroscope is stationary.
+2. **Monitor Tremor Value**: Observe the tremor value displayed on the serial monitor when the gyroscope is stationary. Follow the line 291 in the code to figure out the observed tremor value. You will have to use a serial monitor for this.
 
 3. **Adjust Threshold**:
    - If the observed tremor value exceeds the default threshold of 0.50, note this value.
