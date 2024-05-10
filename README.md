@@ -1,6 +1,6 @@
 # Parkinsons Embedded Challenge
 
-This project implements a tremor detection system using the ST DISCO-F429ZI board with an LCD display and a gyroscope sensor. The system detects tremors, calculates their frequency, and displays the intensity on the LCD screen.
+This project implements a tremor detection system specifically designed to identify and analyze resting tremors associated with Parkinson's disease. Utilizing the ST DISCO-F429ZI board equipped with an LCD display and a gyroscope sensor, the system detects tremors, calculates their frequency, and visually displays the intensity on the LCD screen. The system is optimized to detect tremors within the frequency range of 3-6 Hz, providing a comprehensive tool for monitoring tremor severity.
 
 ## Overview
 
@@ -70,4 +70,4 @@ The intensity of the tremor is displayed on the LCD screen based on the average 
 
 ## Conclusion
 
-This system effectively detects and analyzes tremors using a gyroscope sensor, with results displayed on an LCD screen. The system's modular structure allows for easy adjustments to thresholds and parameters based on real-world testing.
+This system effectively detects and analyzes resting tremors related to Parkinson's disease, which typically occur in the frequency range of 3-6 Hz. The intensity of these tremors is displayed on an LCD screen, providing a clear visual representation of the tremor severity. The system's modular structure allows for easy adjustments to thresholds and parameters based on real-world testing, ensuring accurate and reliable tremor detection and analysis.

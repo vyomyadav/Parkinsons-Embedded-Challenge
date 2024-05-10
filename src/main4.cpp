@@ -21,7 +21,7 @@
 // #define BUFFER_SIZE 100 // Number of samples to keep in buffer
 // #define TREMOR_THRESHOLD 0.7 // Threshold for tremor detection in degrees/s
 
-// // FIR filter parameters
+// FIR filter parameters
 // constexpr size_t NUM_TAPS = 51;
 // std::array<float, NUM_TAPS> fir_coeff = {
 //     0.00144587f,  0.00212609f,  0.00299537f,  0.00403436f,  0.00508687f,
