@@ -1,3 +1,12 @@
+// #Embedded Challenge
+
+// Group Number - Group 46
+
+// Team Members:
+// Vyom Yadav - vy366
+// Guangze Wang - gw2375
+// Atman Wagle - asw9267
+
 #include <mbed.h>                     // Include the mbed framework
 #include "drivers/LCD_DISCO_F429ZI.h" // Include the LCD display library for the ST DISCO-F429ZI board
 #include "arm_math.h"                 // Include the CMSIS-DSP library
