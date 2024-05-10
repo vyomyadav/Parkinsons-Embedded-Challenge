@@ -17,10 +17,10 @@
 #define BUFFER_SIZE 100
 #define NUM_TAPS 51
 #define TREMOR_THRESHOLD 0.50 // Tremor Threshold to remove noise from gyroscope data when its stationary.
-// If getting tremor more than 0.7 when gyroscope is stationary, please configure TREMOR_THRESHOLD by placing the gyroscope stationary on a flat surface and the tremor value in the serial monitor update this value to that, maybe a 0.1 over that value.
+// If getting tremor more than 0.5 when gyroscope is stationary, please configure TREMOR_THRESHOLD by placing the gyroscope stationary on a flat surface and the tremor value in the serial monitor update this value to that, maybe a 0.1 over that value.
 #define NUM_RECENT_EVENTS 10
-#define NO_TREMOR_TIME_THRESHOLD (8 * SAMPLING_RATE) // 10 seconds converted to number of samples at given SAMPLING_RATE
-#define FREQUENCY_BUFFER_SIZE 8                 // Defining a frequency buffer to hold frequencies of tremors
+#define NO_TREMOR_TIME_THRESHOLD (8 * SAMPLING_RATE) // 8 seconds converted to number of samples at given SAMPLING_RATE
+#define FREQUENCY_BUFFER_SIZE 3                 // Defining a frequency buffer to hold frequencies of tremors
 
 EventFlags flags;
 SPI spi(PF_9, PF_8, PF_7, PC_1, use_gpio_ssel); // SPI bus configuration
@@ -48,9 +48,11 @@ const float32_t firCoeffs32[NUM_TAPS] = {
 // CMSIS-DSP FIR instance
 arm_fir_instance_f32 S[3];
 
+//Initializing buffers for the x,y,z axis data from the gyroscope
 std::array<float, BUFFER_SIZE> gyro_buffer_x, gyro_buffer_y, gyro_buffer_z;
 int buffer_index = 0;
 
+// Initializing event times
 std::array<std::chrono::milliseconds, NUM_RECENT_EVENTS> event_times;
 size_t event_index = 0;
 bool is_first_event = true;
@@ -69,12 +71,13 @@ void spi_cb(int event)
   flags.set(SPI_FLAG);
 }
 
-// Definitions for add_to_buffer and compute_average modified to handle different axis
+// Definitions for add_to_buffer to handle different axis
 void add_to_buffer(float filtered_val, std::array<float, BUFFER_SIZE>& buffer, int& index) {
     buffer[index++] = filtered_val;
     if (index >= BUFFER_SIZE) index = 0;
 }
 
+// Definitions for compute_average to handle different axis
 float compute_average(const std::array<float, BUFFER_SIZE>& buffer) {
     float sum = 0.0f;
     for (auto val : buffer) sum += val;
@@ -87,6 +90,8 @@ bool detect_tremor(float magnitude)
   return fabs(magnitude) > TREMOR_THRESHOLD;
 }
 
+
+//Calculate frequency of consecutive tremors
 float calculate_frequency() {
   if (is_first_event || event_index < 2)  // Require at least two events to compute a frequency
     return 0.0f;
@@ -106,6 +111,7 @@ float calculate_frequency() {
   return 1000.0f / average_interval;  // Convert average interval in milliseconds to frequency in Hz
 }
 
+//Calculate the average freqeuency for specific buffer size
 float calculate_average_frequency()
 {
   float total = 0.0f;
@@ -117,13 +123,14 @@ float calculate_average_frequency()
 }
 
 
-
+//Function for resetting event_times frequency
 void reset_tremor_event_tracking() {
     is_first_event = true;
     event_index = 0;
     std::fill(event_times.begin(), event_times.end(), std::chrono::milliseconds(0)); // Set all event times to zero
 }
 
+//Function to reset the frequency buffer
 void reset_frequency_buffer()
 {
   for (int i = 0; i < FREQUENCY_BUFFER_SIZE; i++)
@@ -166,16 +173,19 @@ void display_intensity(const char *intensity)
   int offset = strlen(label) * 100; // Position calculation for the intensity value
 
   // Setting different LCD Color for different intensities
+  //LOW = 3-4Hz
   if (strstr(intensity, "Low"))
   {
     lcd.SetTextColor(LCD_COLOR_GREEN);
     lcd.DisplayStringAt(offset, LINE(9), (uint8_t *)"Low", LEFT_MODE);
   }
+  //MEDIUM = 4-5Hz
   else if (strstr(intensity, "Medium"))
   {
     lcd.SetTextColor(LCD_COLOR_BLUE);
     lcd.DisplayStringAt(offset, LINE(9), (uint8_t *)"Medium", LEFT_MODE);
   }
+  //HIGH = 5-6Hz
   else if (strstr(intensity, "High"))
   {
     lcd.SetTextColor(LCD_COLOR_RED);
@@ -192,9 +202,9 @@ void clear_line(uint8_t line)
   lcd.DisplayStringAt(0, line, (uint8_t *)empty_line, CENTER_MODE);
 }
 
+// Code to handle absence of detected tremor
 void no_tremor_detected()
 {
-  // Code to handle absence of detected tremor
   if (!message_displayed)
   {
     no_tremor_counter++;
@@ -229,7 +239,6 @@ int main()
   write_buf[1] = CTRL_REG1_CONFIG;
   spi.transfer(write_buf, 2, read_buf, 2, spi_cb);
   flags.wait_all(SPI_FLAG);
-
   write_buf[0] = CTRL_REG4;
   write_buf[1] = CTRL_REG4_CONFIG;
   spi.transfer(write_buf, 2, read_buf, 2, spi_cb);
@@ -269,11 +278,9 @@ int main()
 
     // Compute vector magnitude from averages
     float magnitude = sqrtf(average_x * average_x + average_y * average_y + average_z * average_z);
-
-
     
     // printf("Tremor detected: %4.5f degrees/s\n", average); // For serial Monitor check
-    // For serial Monitor check
+    // Condition to check if magnitude is greater than tremor threshold
     if (detect_tremor(magnitude))
     {
       // printf("Tremor detected: %4.5f degrees/s\n", magnitude);
@@ -327,6 +334,7 @@ int main()
         }
         else
         {
+          // Function to handle the absence of detected tremor
           no_tremor_detected();
         }
         reset_frequency_buffer();  // Reset the frequency buffer
