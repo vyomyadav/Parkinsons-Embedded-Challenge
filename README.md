@@ -38,6 +38,19 @@ The tremor threshold (`TREMOR_THRESHOLD`) is a critical parameter used to distin
 This configuration step ensures that the system accurately differentiates between actual tremors and background noise, enhancing the reliability of tremor detection. Adjusting the threshold based on real-world observations is essential for optimal system performance.
 
 
+## Limitations
+
+We encountered difficulties in getting the FFT (Fast Fourier Transform) function from the arm_math.h library to work as expected. As a result, we opted for an alternative method of frequency calculation by measuring the time intervals between detected tremor events.
+
+### Frequency Calculation Method
+
+ - **Log Tremor Events:** Each detected tremor event is time-stamped.
+ - **Calculate Intervals:** The time intervals between consecutive tremor events are computed.
+ - **Determine Frequency:** The frequency is calculated by taking the inverse of the average time interval (i.e., Frequency = 1 / Average Interval).
+
+This approach provides a direct and practical means of determining tremor frequency without the complexities associated with FFT implementation.
+
+
 ## Steps Explained
 
 ### 1. SPI Communication
@@ -67,6 +80,7 @@ A buffer of recent tremor frequencies is maintained to calculate an average freq
 ### 7. LCD Display
 
 The intensity of the tremor is displayed on the LCD screen based on the average frequency calculated. The system categorizes the intensity into three levels: Low, Medium, and High, each represented by a different color on the LCD.
+
 
 ## Conclusion
 
