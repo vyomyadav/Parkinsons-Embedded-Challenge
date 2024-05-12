@@ -25,6 +25,8 @@ The main components of the system include:
 
 The tremor threshold (`TREMOR_THRESHOLD`) is a critical parameter used to distinguish between actual tremor signals and background noise when the gyroscope is stationary. To ensure accurate tremor detection, follow these steps to configure the threshold:
 
+**Note:** We have set the tremor threshold as 0.50 which has been verified as a valid threshold for our gyroscopes. If you are observing some noise on no movement. Then follow the below steps.
+
 1. **Initial Setup**: Place the gyroscope sensor on a flat, stable surface to minimize any movement.
 
 2. **Monitor Tremor Value**: Observe the tremor value displayed on the serial monitor when the gyroscope is stationary. Follow the line 291 in the code to figure out the observed tremor value. You will have to use a serial monitor for this.
