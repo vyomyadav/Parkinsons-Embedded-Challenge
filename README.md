@@ -48,6 +48,15 @@ This configuration step ensures that the system accurately differentiates betwee
 
 We encountered difficulties in getting the FFT (Fast Fourier Transform) function from the arm_math.h library to work as expected. As a result, we opted for an alternative method of frequency calculation by measuring the time intervals between detected tremor events.
 
+### Advantages
+
+ - Low computational overhead.
+ - Real-time detection and response.
+
+### Disadvantages
+ - Less precise for complex or noisy signals.
+ - Only captures the dominant frequency. 
+
 ### Frequency Calculation Method
 
  - **Log Tremor Events:** Each detected tremor event is time-stamped.
