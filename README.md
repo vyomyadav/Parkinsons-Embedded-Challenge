@@ -54,8 +54,9 @@ We encountered difficulties in getting the FFT (Fast Fourier Transform) function
  - Real-time detection and response.
 
 ### Disadvantages
- - Less precise for complex or noisy signals.
- - Only captures the dominant frequency. 
+ - Less precise for complex or noisy signals. (To counter this we used a tremor threshold to remove unnecessary noise)
+ - Only captures the dominant frequency. (To counter this we used a frequency buffer to calculate the average frequency)
+
 
 ### Frequency Calculation Method
 
